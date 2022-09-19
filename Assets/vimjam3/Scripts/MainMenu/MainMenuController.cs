@@ -8,12 +8,17 @@ public class MainMenuController : MonoBehaviour
 {
     [SerializeField] private Button[] m_MenuButtons;
 
+    [SerializeField] private GameObject m_RotationPoint = null;
+
     private bool m_HasLoaded = false;
 
     private void Start()
     {
         // Unload Bootstrap
-        SceneManager.UnloadSceneAsync(0);
+        if (SceneManager.GetSceneByBuildIndex(0).isLoaded)
+        {
+            SceneManager.UnloadSceneAsync(0);
+        }
 
 #if UNITY_WEBGL || UNITY_IOS || UNITY_ANDROID
         // On these platforms, we don't quit, the system does.
@@ -32,6 +37,8 @@ public class MainMenuController : MonoBehaviour
                     m_HasLoaded = true;
             }
         }
+
+        m_RotationPoint.transform.Rotate(new Vector3(0, 0.15f, 0));
     }
 
     public void OnPlayButtonClicked()
@@ -41,16 +48,6 @@ public class MainMenuController : MonoBehaviour
         LoadingScreen.Instance.Show();
         SceneLoader.Instance.UnloadScene(Scenes.MainMenu);
         SceneLoader.Instance.LoadSceneAdditive(Scenes.GameScene);
-    }
-
-    public void OnSettingsButtonClicked()
-    {
-
-    }
-
-    public void OnCreditsButtonClicked()
-    {
-
     }
 
     public void OnExitButtonClicked()

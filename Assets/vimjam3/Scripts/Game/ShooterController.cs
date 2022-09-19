@@ -14,14 +14,37 @@ public class ShooterController : MonoBehaviour
     [SerializeField] private LayerMask m_AimColliderMask = new LayerMask();
     [SerializeField] private float m_RotationLerp = 20.0f;
     [SerializeField] private TMP_Text m_InteractText = null;
+    [SerializeField] private TMP_Text m_KeysText = null;
     /*[SerializeField] private GameObject m_BulletPrefab = null;
     [SerializeField] private Transform m_SpawnBulletTransform = null;*/
 
-    private static ShooterController m_Instance;
+    public static ShooterController m_Instance;
 
     private StarterAssetsInputs m_Inputs = null;
     private ThirdPersonController m_Controller = null;
     private bool m_ForceHideInteract = false;
+
+    private ushort m_RemainingKeyUses = 3;
+
+    public ushort GetKeys()
+    {
+        return m_RemainingKeyUses;
+    }
+
+    public void RemoveKey()
+    {
+        m_RemainingKeyUses--;
+    }
+
+    public void UpdateKeyCount()
+    {
+        m_KeysText.text = $"Key uses: {m_RemainingKeyUses}";
+    }
+
+    public void HideKeyCount()
+    {
+        m_KeysText.text = string.Empty;
+    }
 
     private void Awake()
     {
@@ -29,6 +52,14 @@ public class ShooterController : MonoBehaviour
         m_Controller = GetComponent<ThirdPersonController>();
 
         m_Instance = this;
+    }
+
+    private void Start()
+    {
+        m_Inputs.SetCursorState(true);
+        UpdateKeyCount();
+
+        AudioManager.Instance.PlayVoiceLine(VoiceLines.Welcome);
     }
 
     private void Update()
@@ -74,19 +105,32 @@ public class ShooterController : MonoBehaviour
         }
     }
 
+    private void FixedUpdate()
+    {
+        m_InteractText.text = string.Empty;
+    }
+
     private void OnTriggerStay(Collider other)
     {
         if (other.CompareTag("Interactable"))
         {
             if (!m_ForceHideInteract)
                 m_InteractText.text = $"Press <sprite=\"prompts\" name=\"{m_Inputs.GetInteractKey()}\"> to interact";
-            else
-            m_InteractText.text = string.Empty;
 
             if (m_Inputs.interact)
             {
-                other.GetComponent<Interactable>().Interact();
-                m_Inputs.interact = false;
+                /*other.GetComponent<Interactable>().Interact();
+                m_Inputs.interact = false;*/
+
+                if (other.TryGetComponent<Interactable>(out Interactable interactable))
+                {
+                    interactable.Interact();
+                    m_Inputs.interact = false;
+                }
+                else
+                {
+                    Debug.LogWarning("Object has interactable tag but no interactable script!");
+                }
             }
         }
     }
@@ -97,6 +141,11 @@ public class ShooterController : MonoBehaviour
         {
             if (!m_ForceHideInteract)
                 m_InteractText.text = $"Press <sprite=\"prompts\" name=\"{m_Inputs.GetInteractKey()}\"> to interact";
+        }
+
+        if (other.CompareTag("Bounds"))
+        {
+            StartCoroutine(GetComponent<EndFade>().Fade());
         }
     }
 

@@ -17,8 +17,8 @@ MonoBehaviour:
     m_SerializedData: []
   m_GUID: f72b5e65749533a438803299679dbe45
   m_SerializeEntries:
-  - m_GUID: 465f5918701db6643804b7f6b7e1d94c
-    m_Address: Assets/vimjam3/Prefabs/Player.prefab
+  - m_GUID: f0541d245f91d644889a12f89d3299a1
+    m_Address: Assets/vimjam3/Scenes/_LoadingScreen.unity
     m_ReadOnly: 0
     m_SerializedLabels: []
   m_ReadOnly: 0

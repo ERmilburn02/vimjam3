@@ -381,7 +381,8 @@ namespace StarterAssets
                 if (FootstepAudioClips.Length > 0)
                 {
                     var index = Random.Range(0, FootstepAudioClips.Length);
-                    AudioSource.PlayClipAtPoint(FootstepAudioClips[index], transform.TransformPoint(_controller.center), FootstepAudioVolume);
+                    /*AudioSource.PlayClipAtPoint(FootstepAudioClips[index], transform.TransformPoint(_controller.center), FootstepAudioVolume);*/
+                    AudioManager.Instance.PlayAudioAtPoint(FootstepAudioClips[index], transform.TransformPoint(_controller.center));
                 }
             }
         }
@@ -390,7 +391,8 @@ namespace StarterAssets
         {
             if (animationEvent.animatorClipInfo.weight > 0.5f)
             {
-                AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);
+                /*AudioSource.PlayClipAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center), FootstepAudioVolume);*/
+                AudioManager.Instance.PlayAudioAtPoint(LandingAudioClip, transform.TransformPoint(_controller.center));
             }
         }
     }
